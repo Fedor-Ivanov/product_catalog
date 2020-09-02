@@ -9,6 +9,7 @@ import {
 
 const initialState = {
 	list: [],
+	isLoading: false
 };
 
 function updateProduct(list, data) {

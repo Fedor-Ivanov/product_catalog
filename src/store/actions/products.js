@@ -1,3 +1,5 @@
+import app from '../../firebase'
+
 export const ACTION_GET_PRODUCTS = "ACTION_GET_PRODUCTS";
 export function setProducts(data) {
 	return {
@@ -7,7 +9,7 @@ export function setProducts(data) {
 }
 
 export const ACTION_GET_PRODUCT = "ACTION_GET_PRODUCT";
-export function setUser(product) {
+export function setProduct(product) {
 	return {
 		type: ACTION_GET_PRODUCT,
 		payload: product,
@@ -15,7 +17,7 @@ export function setUser(product) {
 }
 
 export const ACTION_CREATE_PRODUCT = "ACTION_CREATE_PRODUCT";
-export function createUser(product) {
+export function createProduct(product) {
 	return {
 		type: ACTION_CREATE_PRODUCT,
 		payload: product,
@@ -23,7 +25,7 @@ export function createUser(product) {
 }
 
 export const ACTION_UPDATE_PRODUCT = "ACTION_UPDATE_PRODUCT";
-export function updateUser(product) {
+export function updateProduct(product) {
 	return {
 		type: ACTION_UPDATE_PRODUCT,
 		payload: product,
@@ -39,10 +41,27 @@ export function loaderProducts(value) {
 }
 
 export const ACTION_DELETE_PRODUCT = "ACTION_DELETE_PRODUCT";
-export function deleteUser(id) {
+export function deleteProduct(id) {
 	return {
 		type: ACTION_DELETE_PRODUCT,
 		payload: id,
+	};
+}
+
+export const THUNK_GET_PRODUCTS = "THUNK_GET_PRODUCTS";
+export function getProducts() {
+	return function (dispatch) {
+		dispatch(loaderProducts(true));
+		app.firestore()
+			.collection("products")
+			.get()
+			.then((querySnapshot) => {
+				const tempDoc = querySnapshot.docs.map((doc) => {
+					return { id: doc.id, ...doc.data() };
+				});
+				dispatch(setProducts(tempDoc));
+			});
+		dispatch(loaderProducts(false));
 	};
 }
 
@@ -79,16 +98,7 @@ export function deleteUser(id) {
 // 	};
 // }
 
-// export const THUNK_GET_PRODUCTS = "THUNK_GET_PRODUCTS";
-// export function getUsers() {
-// 	return function (dispatch) {
-// 		dispatch(loaderUsers(true));
-// 		getAllUsers().then((resp) => {
-// 			dispatch(setUsers(resp.data));
-// 			dispatch(loaderUsers(false));
-// 		});
-// 	};
-// }
+
 
 // export const THUNK_GET_PRODUCT = "THUNK_GET_PRODUCT";
 // export function getThisUser(id) {
