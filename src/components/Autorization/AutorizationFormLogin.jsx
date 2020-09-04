@@ -15,10 +15,10 @@ function AutorizationFormLogin() {
 				validate={(values) => {
 					const errors = {};
 					if (!values.email) {
-						errors.email = "requiredField";
+						errors.email = "required field";
 					}
 					if (!values.password) {
-						errors.password = "requiredField";
+						errors.password = "required field";
 					}
 					return errors;
 				}}

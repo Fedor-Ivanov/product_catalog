@@ -53,6 +53,8 @@ export default function (state = initialState, { type, payload }) {
 			};
 
 		case ACTION_CREATE_PRODUCT:
+
+			console.log(payload)
 			return {
 				...state,
 				list: createProduct(state.list, payload),

@@ -1,35 +1,49 @@
 import React, { useEffect } from "react";
-import app from "../../firebase";
-import { Button } from "@material-ui/core";
 import { connect } from "react-redux";
+import Button from "@material-ui/core/Button";
+import { useRouteMatch, Link } from "react-router-dom";
+import ProductsList from "./ProductsList/ProductsList";
+import AddIcon from "@material-ui/icons/Add";
 import { getProducts } from "../../store/actions/products";
 
-function Products({ products, isLoading, getProducts }) {
+import Box from "@material-ui/core/Box";
+
+function Products({ getProducts, isLoading, products }) {
+	const { path, url } = useRouteMatch();
+
 	useEffect(() => {
+		console.log("get");
 		getProducts();
 	}, []);
 
 	console.log(products);
-
 	return (
-		<div>
-			<Button onClick={() => app.auth().signOut()}>sign out</Button>
-			<p>Products</p>
-			{isLoading ? (
-				<p>wait please</p>
-			) : (
-				products.map((product) => (
-					<div key={product.id}>{product.name}</div>
-				))
-			)}
-		</div>
+		<>
+			<Box p={2}>
+				<Link className="noTextDecoration" to={`${url}new`}>
+					<Button
+						variant="contained"
+						color="secondary"
+						startIcon={<AddIcon />}
+					>
+						add new product
+					</Button>
+				</Link>
+
+				{isLoading ? (
+					<p>isLoading</p>
+				) : (
+					<ProductsList products={products} />
+				)}
+			</Box>
+		</>
 	);
 }
 
 function mapStateToProps({ products }) {
 	return {
-		products: products.list,
 		isLoading: products.isLoading,
+		products: products.list,
 	};
 }
 
