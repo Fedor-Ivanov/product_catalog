@@ -84,39 +84,26 @@ export function saveProduct(item) {
 	};
 }
 
-// export const THUNK_DELETE_PRODUCT = "THUNK_DELETE_PRODUCT";
-// export function delUser(id) {
+export const THUNK_DELETE_PRODUCT = "THUNK_DELETE_PRODUCT";
+export function delProduct(id) {
+	return function (dispatch) {
+		app.firestore().collection("products").doc(id).delete().then(() => {
+			dispatch(deleteProduct(id));
+		})
+	};
+}
+
+// export const UPLOAD_PRODUCT_PHOTO = "UPLOAD_PRODUCT_PHOTO";
+// export function uploadProductPhoto(img) {
 // 	return function (dispatch) {
-// 		// apiUsers.delete(id).then((resp) => {
-// 		// 	dispatch(deleteUser(resp.data.id));
-// 		// });
+
+// 		console.log(img)
+
+// 		// app.storage().collection("products").doc(id).delete().then(() => {
+// 		// 	dispatch(deleteProduct(id));
+// 		// })
 // 	};
 // }
-
-// export const THUNK_SAVE_PRODUCT = "THUNK_SAVE_PRODUCT";
-// export function saveUser(item) {
-// 	console.log(item);
-// 	return function (dispatch, getState) {
-// 		if (item.id) {
-// 			dispatch(loaderUsers(true));
-// 			updtUser(item).then((resp) => {
-// 				dispatch(updateUser(resp.data));
-// 				const userData = getState().auth.userData;
-// 				if (resp.data.id == userData.data.id) {
-// 					dispatch(updateUserDataLocal(resp.data));
-// 				}
-// 				dispatch(loaderUsers(false));
-// 			});
-// 		} else {
-// 			dispatch(loaderUsers(true));
-// 			crtUser(item).then((resp) => {
-// 				dispatch(createUser(resp.data));
-// 				dispatch(loaderUsers(false));
-// 			});
-// 		}
-// 	};
-// }
-
 
 
 // export const THUNK_GET_PRODUCT = "THUNK_GET_PRODUCT";

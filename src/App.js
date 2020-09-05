@@ -2,7 +2,7 @@ import React from "react";
 import './App.css'
 import AutorizationFormLogin from "./components/Autorization/AutorizationFormLogin";
 import Products from "./components/Products/Products";
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom'
 import { AuthProvider } from './components/Autorization/Auth'
 import PrivateRoute from './components/PrivateRoute/PrivateRoute'
 import ProductForm from './components/Products/ProductForm/ProductForm'
@@ -16,19 +16,22 @@ function App() {
 
 	return (
 		<div>
-			<AppBar position="static">
-				<Toolbar
-					style={{ display: "flex", justifyContent: "space-between" }}
-				>
-					<Typography>Products catalog</Typography>
-					<IconButton onClick={() => app.auth().signOut()}>
-						<ExitToAppIcon style={{ color: "#fff" }} />
-					</IconButton>
-				</Toolbar>
-			</AppBar>
+			<Router>
+				<AppBar position="static">
+					<Toolbar
+						style={{ display: "flex", justifyContent: "space-between" }}
+					>
+						<Link className='noTextDecoration' style={{ color: "#fff" }} to='/'>
+							<Typography>Products catalog</Typography>
+						</Link>
+						<IconButton onClick={() => app.auth().signOut()}>
+							<ExitToAppIcon style={{ color: "#fff" }} />
+						</IconButton>
+					</Toolbar>
+				</AppBar>
 
-			<AuthProvider>
-				<Router>
+				<AuthProvider>
+
 					<div>
 						<Switch>
 							<PrivateRoute exact path='/' component={Products} />
@@ -39,8 +42,8 @@ function App() {
 							/>
 						</Switch>
 					</div>
-				</Router>
-			</AuthProvider>
+				</AuthProvider>
+			</Router>
 		</div>
 	)
 }

@@ -4,6 +4,7 @@ import "firebase/auth";
 import "firebase/firestore";
 import "firebase/storage";
 
+
 const app = firebase.initializeApp({
     apiKey: "AIzaSyBdEg9ztmBYNZ_7ZOw8Mc_rL7CpM1UbPmI",
     authDomain: "product-catalog-ea806.firebaseapp.com",
