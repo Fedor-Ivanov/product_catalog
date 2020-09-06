@@ -11,11 +11,8 @@ import * as Yup from "yup";
 
 function ProductForm({ item, saveProduct }) {
 	const history = useHistory();
-
 	const nowDate = new Date();
-
-	const [image, setImage] = useState(null);
-	const [url, setUrl] = useState(null);
+	const [product, setProduct] = useState(item);
 
 	const validation = Yup.object().shape({
 		title: Yup.string().min(20, "Too Short!").max(60, "Too Long!").required("Required"),
@@ -26,14 +23,18 @@ function ProductForm({ item, saveProduct }) {
 			is: (discount) => discount >= 10 || discount <= 90 == true,
 			then: (fieldSchema) => fieldSchema.min(nowDate, "feature date").required("Required"),
 		}),
-		url: Yup.string().required("Required"),
+		// url: Yup.string().required("Required"),
 		// file: Yup.object().when("url", {
 		// 	is: (url) => url == false,
 		// 	then: (fieldSchema) => fieldSchema.required("Required"),
 		// }),
-	});
 
-	const [product, setProduct] = useState(item);
+		file: Yup.mixed().nullable().test("file-size", "Invalid file size", checkIfFilesAreTooBig),
+		url: Yup.string().when("file", {
+			is: (checkIfFilesAreTooBig) => console.log(checkIfFilesAreTooBig),
+			then: (fieldSchema) => fieldSchema.required("Required"),
+		}),
+	});
 
 	function onChange({ target }) {
 		setProduct({
@@ -42,29 +43,65 @@ function ProductForm({ item, saveProduct }) {
 		});
 	}
 
-	function onFileChange(file) {
-		const uploadTask = app.storage().ref(`images/${file.name}`).put(file);
+	function checkIfFilesAreTooBig(files) {
+		let valid = true;
+		if (files) {
+			files.map((file) => {
+				let img = new Image();
+				img.src = window.URL.createObjectURL(file);
+				img.onload = () => {
+					// alert(img.width + " " + img.height);
 
-		uploadTask.on(
-			"state_changed",
-			(snapshot) => {},
-			(error) => {
-				console.log(error);
-			},
-			() => {
-				app.storage()
-					.ref("images")
-					.child(file.name)
-					.getDownloadURL()
-					.then((url) => {
-						console.log(url);
-						setProduct({
-							...product,
-							url: url,
-						});
-					});
+					if (img.width >= 200 && img.width <= 1000 && img.height >= 200 && img.height <= 1000) {
+						valid = true;
+					} else {
+						valid = false;
+					}
+				};
+			});
+
+			return valid;
+		}
+	}
+
+	function onFileChange(file) {
+		let img = new Image();
+		img.src = window.URL.createObjectURL(file);
+		img.onload = () => {
+			// alert(img.width + " " + img.height);
+
+			if (img.width >= 200 && img.width <= 1000 && img.height >= 200 && img.height <= 1000) {
+				const uploadTask = app.storage().ref(`images/${file.name}`).put(file);
+
+				uploadTask.on(
+					"state_changed",
+					(snapshot) => {},
+					(error) => {
+						console.log(error);
+					},
+					() => {
+						app.storage()
+							.ref("images")
+							.child(file.name)
+							.getDownloadURL()
+							.then((url) => {
+								console.log(url);
+								setProduct({
+									...product,
+									url: url,
+								});
+							});
+					}
+				);
+			} else {
+				alert("fail");
 			}
-		);
+		};
+
+		// img.onload = function () {
+		// 	alert(objectUrl.width + " " + objectUrl.height);
+		// 	window.URL.revokeObjectURL(objectUrl);
+		// };
 	}
 
 	return (
@@ -103,7 +140,7 @@ function ProductForm({ item, saveProduct }) {
 									}}
 									accept="image/*"
 									name="file"
-									label="file"
+									label="photo"
 									type="file"
 									error={props.errors.url && props.touched.url}
 									helperText={props.errors.url && props.touched.url && props.errors.url}

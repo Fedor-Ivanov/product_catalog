@@ -1,7 +1,6 @@
 import React from "react";
 import { Link, useRouteMatch } from "react-router-dom";
 import { useDispatch } from "react-redux";
-
 import Paper from "@material-ui/core/Paper";
 import Box from "@material-ui/core/Box";
 import EditIcon from "@material-ui/icons/Edit";
@@ -29,7 +28,9 @@ function ProductItem({ item }) {
 			<Box position="relative">
 				<Box p={2}>
 					<Typography variant="h5">{item.title}</Typography>
-					<img src={item.url} />
+					<div>
+						<img style={{ width: "100%" }} src={item.url} />
+					</div>
 					<Typography variant="subtitle1">{item.description ? item.description : "-"}</Typography>
 					<Typography>
 						{item.discount && itemDate - nowDate < 0 ? (
@@ -56,7 +57,7 @@ function ProductItem({ item }) {
 					</Typography>
 					<Typography>
 						{item.discount && itemDate - nowDate < 0
-							? `only ${discountDateCounter} days left`
+							? `only ${discountDateCounter} day('s) left`
 							: "full price"}
 					</Typography>
 				</Box>
