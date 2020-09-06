@@ -29,10 +29,8 @@ function ProductItem({ item }) {
 			<Box position="relative">
 				<Box p={2}>
 					<Typography variant="h5">{item.title}</Typography>
-					<img src={item.file} />
-					<Typography variant="subtitle1">
-						{item.description ? item.description : "-"}
-					</Typography>
+					<img src={item.url} />
+					<Typography variant="subtitle1">{item.description ? item.description : "-"}</Typography>
 					<Typography>
 						{item.discount && itemDate - nowDate < 0 ? (
 							<>
@@ -47,9 +45,7 @@ function ProductItem({ item }) {
 
 								<span>{` ${
 									item.discount && item.price
-										? Number(item.price) -
-										  (Number(item.price) / 100) *
-												item.discount
+										? Number(item.price) - (Number(item.price) / 100) * item.discount
 										: item.price
 								}$
 									 - sale ${item.discount}%`}</span>
@@ -70,10 +66,7 @@ function ProductItem({ item }) {
 						<Button startIcon={<EditIcon />}>edit</Button>
 					</Link>
 
-					<Button
-						onClick={() => dispatch(delProduct(item.id))}
-						startIcon={<DeleteForeverIcon />}
-					>
+					<Button onClick={() => dispatch(delProduct(item.id))} startIcon={<DeleteForeverIcon />}>
 						delete
 					</Button>
 				</Box>
