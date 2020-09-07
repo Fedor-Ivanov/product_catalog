@@ -13,6 +13,7 @@ function ProductForm({ item, saveProduct }) {
 	const history = useHistory();
 	const nowDate = new Date();
 	const [product, setProduct] = useState(item);
+	const [fileErrors, setfileErrors] = useState(null);
 
 	const validation = Yup.object().shape({
 		title: Yup.string().min(20, "Too Short!").max(60, "Too Long!").required("Required"),
@@ -23,17 +24,7 @@ function ProductForm({ item, saveProduct }) {
 			is: (discount) => discount >= 10 || discount <= 90 == true,
 			then: (fieldSchema) => fieldSchema.min(nowDate, "feature date").required("Required"),
 		}),
-		// url: Yup.string().required("Required"),
-		// file: Yup.object().when("url", {
-		// 	is: (url) => url == false,
-		// 	then: (fieldSchema) => fieldSchema.required("Required"),
-		// }),
-
-		file: Yup.mixed().nullable().test("file-size", "Invalid file size", checkIfFilesAreTooBig),
-		url: Yup.string().when("file", {
-			is: (checkIfFilesAreTooBig) => console.log(checkIfFilesAreTooBig),
-			then: (fieldSchema) => fieldSchema.required("Required"),
-		}),
+		url: Yup.string().required("Required"),
 	});
 
 	function onChange({ target }) {
@@ -43,36 +34,12 @@ function ProductForm({ item, saveProduct }) {
 		});
 	}
 
-	function checkIfFilesAreTooBig(files) {
-		let valid = true;
-		if (files) {
-			files.map((file) => {
-				let img = new Image();
-				img.src = window.URL.createObjectURL(file);
-				img.onload = () => {
-					// alert(img.width + " " + img.height);
-
-					if (img.width >= 200 && img.width <= 1000 && img.height >= 200 && img.height <= 1000) {
-						valid = true;
-					} else {
-						valid = false;
-					}
-				};
-			});
-
-			return valid;
-		}
-	}
-
 	function onFileChange(file) {
 		let img = new Image();
 		img.src = window.URL.createObjectURL(file);
 		img.onload = () => {
-			// alert(img.width + " " + img.height);
-
 			if (img.width >= 200 && img.width <= 1000 && img.height >= 200 && img.height <= 1000) {
 				const uploadTask = app.storage().ref(`images/${file.name}`).put(file);
-
 				uploadTask.on(
 					"state_changed",
 					(snapshot) => {},
@@ -94,14 +61,10 @@ function ProductForm({ item, saveProduct }) {
 					}
 				);
 			} else {
-				alert("fail");
+				console.log('"too big"');
+				setfileErrors("too big");
 			}
 		};
-
-		// img.onload = function () {
-		// 	alert(objectUrl.width + " " + objectUrl.height);
-		// 	window.URL.revokeObjectURL(objectUrl);
-		// };
 	}
 
 	return (
@@ -134,7 +97,6 @@ function ProductForm({ item, saveProduct }) {
 						return (
 							<Form>
 								<TextField
-									// value={props.values.file}
 									onChange={(event) => {
 										onFileChange(event.currentTarget.files[0]);
 									}}
@@ -143,18 +105,9 @@ function ProductForm({ item, saveProduct }) {
 									label="photo"
 									type="file"
 									error={props.errors.url && props.touched.url}
-									helperText={props.errors.url && props.touched.url && props.errors.url}
+									helperText={props.errors.url && props.touched.url && props.errors.url && fileErrors}
 								></TextField>
-								{/* <TextField
-									value={props.values.url}
-									onChange={onChange}
-									label="url"
-									name="url"
-									type="text"
-									onBlur={props.handleBlur}
-									error={props.errors.url && props.touched.url}
-									helperText={props.errors.url && props.touched.url && props.errors.url}
-								></TextField> */}
+
 								<TextField
 									value={props.values.title}
 									onChange={onChange}
