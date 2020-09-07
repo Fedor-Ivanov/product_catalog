@@ -9,19 +9,21 @@ import { getProducts } from "../../store/actions/products";
 import Box from "@material-ui/core/Box";
 
 function Products({ getProducts, products }) {
-	const { path, url } = useRouteMatch();
+	const { url } = useRouteMatch();
 
 	useEffect(() => {
-		console.log("get");
 		getProducts();
 	}, []);
 
-	console.log(products);
 	return (
 		<>
 			<Box p={2}>
 				<Link className="noTextDecoration" to={`${url}new`}>
-					<Button variant="contained" color="secondary" startIcon={<AddIcon />}>
+					<Button
+						variant="contained"
+						color="secondary"
+						startIcon={<AddIcon />}
+					>
 						add new product
 					</Button>
 				</Link>

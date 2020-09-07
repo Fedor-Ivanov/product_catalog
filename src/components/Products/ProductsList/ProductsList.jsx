@@ -6,7 +6,7 @@ function ProductsList({ products }) {
 		<div
 			style={{
 				display: "grid",
-				gridTemplateColumns: "repeat(5, 1fr)",
+				gridTemplateColumns: "repeat(3, 1fr)",
 				gridGap: 20,
 				padding: "20px 0",
 			}}

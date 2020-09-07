@@ -6,7 +6,6 @@ import Box from "@material-ui/core/Box";
 import EditIcon from "@material-ui/icons/Edit";
 import { Button, Typography } from "@material-ui/core";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
-import Divider from "@material-ui/core/Divider";
 import { delProduct } from "../../../store/actions/products";
 
 function ProductItem({ item }) {
@@ -21,18 +20,22 @@ function ProductItem({ item }) {
 
 	const discountDateCounter = Math.floor((itemDate - nowDate) / day);
 
-	console.log(item);
-
 	return (
-		<Paper key={item.id} elevation={2} style={{ display: "grid", gridTemplateRows: "1fr 0.5fr 0.2fr" }}>
+		<Paper
+			key={item.id}
+			elevation={2}
+			style={{ display: "grid", gridTemplateRows: "1fr 0.3fr 0.1fr" }}
+		>
 			<Box p={2}>
 				<img style={{ width: "100%" }} src={item.url} />
 			</Box>
+
 			<Box p={2}>
-				<Divider />
 				<Typography variant="h5">{item.title}</Typography>
 
-				<Typography variant="subtitle1">{item.description ? item.description : "-"}</Typography>
+				<Typography variant="subtitle1">
+					{item.description ? item.description : "-"}
+				</Typography>
 				<Typography>
 					{item.discount && itemDate - nowDate < 0 ? (
 						<>
@@ -47,7 +50,8 @@ function ProductItem({ item }) {
 
 							<span>{` ${
 								item.discount && item.price
-									? Number(item.price) - (Number(item.price) / 100) * item.discount
+									? Number(item.price) -
+									  (Number(item.price) / 100) * item.discount
 									: item.price
 							}$
 									 - sale ${item.discount}%`}</span>
@@ -61,8 +65,6 @@ function ProductItem({ item }) {
 						? `only ${discountDateCounter} day('s) left`
 						: "full price"}
 				</Typography>
-
-				<Divider />
 			</Box>
 
 			<Box p={2} display="flex" justifyContent="space-between">
@@ -70,7 +72,10 @@ function ProductItem({ item }) {
 					<Button startIcon={<EditIcon />}>edit</Button>
 				</Link>
 
-				<Button onClick={() => dispatch(delProduct(item.id))} startIcon={<DeleteForeverIcon />}>
+				<Button
+					onClick={() => dispatch(delProduct(item.id))}
+					startIcon={<DeleteForeverIcon />}
+				>
 					delete
 				</Button>
 			</Box>
