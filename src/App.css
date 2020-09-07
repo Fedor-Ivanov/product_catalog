@@ -1,3 +1,11 @@
 .noTextDecoration {
 	text-decoration: none;
 }
+
+input[type=date]:required:invalid::-webkit-datetime-edit {
+	color: transparent!important;
+}
+
+input[type=date]:focus::-webkit-datetime-edit {
+	color: black !important;
+}

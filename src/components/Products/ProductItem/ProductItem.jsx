@@ -24,53 +24,55 @@ function ProductItem({ item }) {
 	console.log(item);
 
 	return (
-		<Paper key={item.id} elevation={2}>
-			<Box position="relative">
-				<Box p={2}>
-					<Typography variant="h5">{item.title}</Typography>
-					<div>
-						<img style={{ width: "100%" }} src={item.url} />
-					</div>
-					<Typography variant="subtitle1">{item.description ? item.description : "-"}</Typography>
-					<Typography>
-						{item.discount && itemDate - nowDate < 0 ? (
-							<>
-								<span
-									style={{
-										textDecoration: "line-through",
-										paddingRight: 5,
-									}}
-								>
-									{item.price}$
-								</span>
-
-								<span>{` ${
-									item.discount && item.price
-										? Number(item.price) - (Number(item.price) / 100) * item.discount
-										: item.price
-								}$
-									 - sale ${item.discount}%`}</span>
-							</>
-						) : (
-							<span>{item.price}$</span>
-						)}
-					</Typography>
-					<Typography>
-						{item.discount && itemDate - nowDate < 0
-							? `only ${discountDateCounter} day('s) left`
-							: "full price"}
-					</Typography>
-				</Box>
+		<Paper key={item.id} elevation={2} style={{ display: "grid", gridTemplateRows: "1fr 0.5fr 0.2fr" }}>
+			<Box p={2}>
+				<img style={{ width: "100%" }} src={item.url} />
+			</Box>
+			<Box p={2}>
 				<Divider />
-				<Box p={2} display="flex" justifyContent="space-between">
-					<Link className="noTextDecoration" to={`${url}${item.id}`}>
-						<Button startIcon={<EditIcon />}>edit</Button>
-					</Link>
+				<Typography variant="h5">{item.title}</Typography>
 
-					<Button onClick={() => dispatch(delProduct(item.id))} startIcon={<DeleteForeverIcon />}>
-						delete
-					</Button>
-				</Box>
+				<Typography variant="subtitle1">{item.description ? item.description : "-"}</Typography>
+				<Typography>
+					{item.discount && itemDate - nowDate < 0 ? (
+						<>
+							<span
+								style={{
+									textDecoration: "line-through",
+									paddingRight: 5,
+								}}
+							>
+								{item.price}$
+							</span>
+
+							<span>{` ${
+								item.discount && item.price
+									? Number(item.price) - (Number(item.price) / 100) * item.discount
+									: item.price
+							}$
+									 - sale ${item.discount}%`}</span>
+						</>
+					) : (
+						<span>{item.price}$</span>
+					)}
+				</Typography>
+				<Typography>
+					{item.discount && itemDate - nowDate < 0
+						? `only ${discountDateCounter} day('s) left`
+						: "full price"}
+				</Typography>
+
+				<Divider />
+			</Box>
+
+			<Box p={2} display="flex" justifyContent="space-between">
+				<Link className="noTextDecoration" to={`${url}${item.id}`}>
+					<Button startIcon={<EditIcon />}>edit</Button>
+				</Link>
+
+				<Button onClick={() => dispatch(delProduct(item.id))} startIcon={<DeleteForeverIcon />}>
+					delete
+				</Button>
 			</Box>
 		</Paper>
 	);

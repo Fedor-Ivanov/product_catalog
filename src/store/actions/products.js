@@ -1,4 +1,4 @@
-import app from '../../firebase'
+import app from "../../firebase";
 
 export const ACTION_GET_PRODUCTS = "ACTION_GET_PRODUCTS";
 export function setProducts(data) {
@@ -32,14 +32,6 @@ export function updateProduct(product) {
 	};
 }
 
-export const ACTION_LOADER_PRODUCTS = "ACTION_LOADER_PRODUCTS";
-export function loaderProducts(value) {
-	return {
-		type: ACTION_LOADER_PRODUCTS,
-		payload: value,
-	};
-}
-
 export const ACTION_DELETE_PRODUCT = "ACTION_DELETE_PRODUCT";
 export function deleteProduct(id) {
 	return {
@@ -51,7 +43,6 @@ export function deleteProduct(id) {
 export const THUNK_GET_PRODUCTS = "THUNK_GET_PRODUCTS";
 export function getProducts() {
 	return function (dispatch) {
-		dispatch(loaderProducts(true));
 		app.firestore()
 			.collection("products")
 			.get()
@@ -61,25 +52,34 @@ export function getProducts() {
 				});
 				dispatch(setProducts(tempDoc));
 			});
-		dispatch(loaderProducts(false));
 	};
 }
 
-export const THUNK_SAVE_PRODUCT = 'THUNK_SAVE_PRODUCT';
+export const THUNK_SAVE_PRODUCT = "THUNK_SAVE_PRODUCT";
 export function saveProduct(item) {
 	return function (dispatch) {
 		if (item.id) {
-			app.firestore().collection("products").doc(item.id).update(item).then(() => {
-				dispatch(updateProduct(item));
-			})
+			app.firestore()
+				.collection("products")
+				.doc(item.id)
+				.update(item)
+				.then(() => {
+					dispatch(updateProduct(item));
+				});
 		} else {
-			app.firestore().collection("products").add(item)
+			app.firestore()
+				.collection("products")
+				.add(item)
 				.then((docRef) => {
-					app.firestore().collection("products").doc(docRef.id).get().then((newItem) => {
-						console.log(newItem.data())
-						dispatch(createProduct(newItem.data()));
-					})
-				})
+					app.firestore()
+						.collection("products")
+						.doc(docRef.id)
+						.get()
+						.then((newItem) => {
+							console.log(newItem.data());
+							dispatch(createProduct(newItem.data()));
+						});
+				});
 		}
 	};
 }
@@ -87,9 +87,13 @@ export function saveProduct(item) {
 export const THUNK_DELETE_PRODUCT = "THUNK_DELETE_PRODUCT";
 export function delProduct(id) {
 	return function (dispatch) {
-		app.firestore().collection("products").doc(id).delete().then(() => {
-			dispatch(deleteProduct(id));
-		})
+		app.firestore()
+			.collection("products")
+			.doc(id)
+			.delete()
+			.then(() => {
+				dispatch(deleteProduct(id));
+			});
 	};
 }
 
@@ -104,7 +108,6 @@ export function delProduct(id) {
 // 		// })
 // 	};
 // }
-
 
 // export const THUNK_GET_PRODUCT = "THUNK_GET_PRODUCT";
 // export function getThisUser(id) {

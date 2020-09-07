@@ -3,13 +3,11 @@ import {
 	ACTION_GET_PRODUCT,
 	ACTION_DELETE_PRODUCT,
 	ACTION_UPDATE_PRODUCT,
-	ACTION_LOADER_PRODUCTS,
 	ACTION_CREATE_PRODUCT,
 } from "../actions/products";
 
 const initialState = {
 	list: [],
-	isLoading: false
 };
 
 function updateProduct(list, data) {
@@ -46,15 +44,7 @@ export default function (state = initialState, { type, payload }) {
 				list: updateProduct(state.list, payload),
 			};
 
-		case ACTION_LOADER_PRODUCTS:
-			return {
-				...state,
-				isLoading: payload,
-			};
-
 		case ACTION_CREATE_PRODUCT:
-
-			console.log(payload)
 			return {
 				...state,
 				list: createProduct(state.list, payload),

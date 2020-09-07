@@ -38,7 +38,7 @@ function ProductForm({ item, saveProduct }) {
 		let img = new Image();
 		img.src = window.URL.createObjectURL(file);
 		img.onload = () => {
-			if (img.width >= 200 && img.width <= 1000 && img.height >= 200 && img.height <= 1000) {
+			if (img.width >= 200 && img.width <= 4000 && img.height >= 200 && img.height <= 4000) {
 				const uploadTask = app.storage().ref(`images/${file.name}`).put(file);
 				uploadTask.on(
 					"state_changed",
@@ -64,6 +64,10 @@ function ProductForm({ item, saveProduct }) {
 				console.log('"too big"');
 				setfileErrors("too big");
 			}
+		};
+
+		img.onerror = () => {
+			return;
 		};
 	}
 
@@ -101,6 +105,7 @@ function ProductForm({ item, saveProduct }) {
 										onFileChange(event.currentTarget.files[0]);
 									}}
 									accept="image/*"
+									id="file"
 									name="file"
 									label="photo"
 									type="file"

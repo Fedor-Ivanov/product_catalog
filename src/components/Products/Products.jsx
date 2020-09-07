@@ -8,7 +8,7 @@ import { getProducts } from "../../store/actions/products";
 
 import Box from "@material-ui/core/Box";
 
-function Products({ getProducts, isLoading, products }) {
+function Products({ getProducts, products }) {
 	const { path, url } = useRouteMatch();
 
 	useEffect(() => {
@@ -21,20 +21,12 @@ function Products({ getProducts, isLoading, products }) {
 		<>
 			<Box p={2}>
 				<Link className="noTextDecoration" to={`${url}new`}>
-					<Button
-						variant="contained"
-						color="secondary"
-						startIcon={<AddIcon />}
-					>
+					<Button variant="contained" color="secondary" startIcon={<AddIcon />}>
 						add new product
 					</Button>
 				</Link>
 
-				{isLoading ? (
-					<p>isLoading</p>
-				) : (
-					<ProductsList products={products} />
-				)}
+				<ProductsList products={products} />
 			</Box>
 		</>
 	);
@@ -42,7 +34,6 @@ function Products({ getProducts, isLoading, products }) {
 
 function mapStateToProps({ products }) {
 	return {
-		isLoading: products.isLoading,
 		products: products.list,
 	};
 }
