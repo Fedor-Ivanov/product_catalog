@@ -18,14 +18,11 @@ function ProductForm({ item, saveProduct }) {
 	const [fileErrors, setfileErrors] = useState(null);
 
 	useEffect(() => {
-		if (item.id) {
+		if (item.id && item.discountDate) {
 			console.log(item.discountDate);
-			const formatedDate = item.discountDate.toDate();
-
-			console.log(formatedDate);
 			setProduct({
-				...product,
-				discountDate: formatedDate,
+				...item,
+				discountDate: item.discountDate.toDate(),
 			});
 		}
 	}, []);
@@ -52,9 +49,15 @@ function ProductForm({ item, saveProduct }) {
 	}
 
 	const handleDateChange = (date) => {
+		let nowDate = new Date();
+		let itemData = date;
+		let day = 1000 * 60 * 60 * 24;
+		let discountDateCounter = Math.floor((itemData - nowDate) / day);
+
 		setProduct({
 			...product,
 			discountDate: date,
+			discountCounter: discountDateCounter,
 		});
 	};
 
@@ -96,7 +99,6 @@ function ProductForm({ item, saveProduct }) {
 
 	return (
 		<>
-			<button onClick={() => console.log(product)}>show state</button>
 			<Box p={2}>
 				<Formik
 					enableReinitialize={true}
@@ -106,12 +108,6 @@ function ProductForm({ item, saveProduct }) {
 						setSubmitting(true);
 
 						try {
-							// let formateddiscountDate = Date(values.discountDate);
-							// saveProduct({
-							// 	...values,
-							// 	discountDate: formateddiscountDate,
-							// });
-
 							await saveProduct(values);
 							history.push("/");
 						} catch (error) {
@@ -122,7 +118,7 @@ function ProductForm({ item, saveProduct }) {
 				>
 					{(props) => {
 						return (
-							<Form>
+							<Form onSubmit={props.handleSubmit}>
 								<Box
 									p={3}
 									style={{
@@ -145,7 +141,6 @@ function ProductForm({ item, saveProduct }) {
 											props.errors.url && props.touched.url && props.errors.url && fileErrors
 										}
 									></TextField>
-
 									<TextField
 										value={props.values.title}
 										onChange={onChange}
@@ -195,7 +190,6 @@ function ProductForm({ item, saveProduct }) {
 									<MuiPickersUtilsProvider utils={DateFnsUtils}>
 										<KeyboardDatePicker
 											format="dd.MM.yyyy"
-											type="text"
 											value={props.values.discountDate ? props.values.discountDate : null}
 											name="discountDate"
 											label="discount date"
@@ -232,7 +226,7 @@ function mapStateToProps({ products }, { match }) {
 		description: "",
 		price: "",
 		discount: "",
-		discountDate: null,
+		discountDate: "",
 	};
 	return {
 		item: match.params.id !== "new" ? products.list.find((item) => item.id === match.params.id) : newProduct,

@@ -11,23 +11,7 @@ import { delProduct } from "../../../store/actions/products";
 function ProductItem({ item }) {
 	const { url } = useRouteMatch();
 	const dispatch = useDispatch();
-
-	const [discountDateCounter, setDiscountDateCounter] = useState();
-
 	let nowDate = new Date();
-	console.log(item.discountDate);
-	useEffect(() => {
-		let day = 1000 * 60 * 60 * 24;
-
-		let discountDateCounter = Math.floor((item.discountDate.toDate() - nowDate) / day);
-
-		setDiscountDateCounter(discountDateCounter);
-
-		console.log(nowDate);
-		console.log(item.discountDate);
-		console.log(item.discountDate.toDate());
-		console.log(discountDateCounter);
-	}, []);
 
 	return (
 		<Paper key={item.id} elevation={2} style={{ display: "grid", gridTemplateRows: "1fr 0.3fr 0.1fr" }}>
@@ -64,7 +48,7 @@ function ProductItem({ item }) {
 				</Typography>
 				<Typography>
 					{item.discount && item.discountDate - nowDate < 0
-						? `only ${discountDateCounter} day('s) left`
+						? `only ${item.discountCounter} day('s) left`
 						: "full price"}
 				</Typography>
 			</Box>

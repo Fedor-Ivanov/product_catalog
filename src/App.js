@@ -1,8 +1,7 @@
-import React, { useEffect } from "react";
+import React from "react";
 import "./App.css";
 import AutorizationFormLogin from "./components/Autorization/AutorizationFormLogin";
 import Products from "./components/Products/Products";
-import { useDispatch } from "react-redux";
 import { BrowserRouter as Router, Route, Switch, Link } from "react-router-dom";
 import { AuthProvider } from "./components/Autorization/Auth";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
@@ -12,15 +11,8 @@ import { AppBar, Typography } from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import Toolbar from "@material-ui/core/Toolbar";
-import { getProducts } from "./store/actions/products";
 
 function App() {
-	const dispatch = useDispatch();
-
-	// useEffect(() => {
-	// 	dispatch(getProducts());
-	// }, []);
-
 	return (
 		<div>
 			<Router>

@@ -5,7 +5,6 @@ import { useRouteMatch, Link } from "react-router-dom";
 import ProductsList from "./ProductsList/ProductsList";
 import AddIcon from "@material-ui/icons/Add";
 import { getProducts } from "../../store/actions/products";
-
 import Box from "@material-ui/core/Box";
 
 function Products({ getProducts, products }) {
@@ -17,7 +16,6 @@ function Products({ getProducts, products }) {
 
 	return (
 		<>
-			<button onClick={() => console.log(products)}>show state</button>
 			<Box p={2}>
 				<Link className="noTextDecoration" to={`${url}new`}>
 					<Button variant="contained" color="secondary" startIcon={<AddIcon />}>

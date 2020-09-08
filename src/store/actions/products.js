@@ -61,13 +61,10 @@ export function saveProduct(item) {
 
 	return function (dispatch) {
 		if (item.id) {
-			app.firestore()
-				.collection("products")
-				.doc(item.id)
-				.update(item)
-				.then(() => {
-					dispatch(updateProduct(item));
-				});
+			app.firestore().collection("products").doc(item.id).update(item);
+			// .then(() => {
+			// 	dispatch(updateProduct(item));
+			// });
 		} else {
 			app.firestore()
 				.collection("products")
@@ -97,26 +94,3 @@ export function delProduct(id) {
 			});
 	};
 }
-
-// export const UPLOAD_PRODUCT_PHOTO = "UPLOAD_PRODUCT_PHOTO";
-// export function uploadProductPhoto(img) {
-// 	return function (dispatch) {
-
-// 		console.log(img)
-
-// 		// app.storage().collection("products").doc(id).delete().then(() => {
-// 		// 	dispatch(deleteProduct(id));
-// 		// })
-// 	};
-// }
-
-// export const THUNK_GET_PRODUCT = "THUNK_GET_PRODUCT";
-// export function getThisUser(id) {
-// 	return function (dispatch) {
-// 		dispatch(loaderUsers(true));
-// 		getUser(id).then((resp) => {
-// 			dispatch(setUser(resp.data));
-// 			dispatch(loaderUsers(false));
-// 		});
-// 	};
-// }
