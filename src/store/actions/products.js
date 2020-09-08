@@ -57,6 +57,8 @@ export function getProducts() {
 
 export const THUNK_SAVE_PRODUCT = "THUNK_SAVE_PRODUCT";
 export function saveProduct(item) {
+	console.log(item);
+
 	return function (dispatch) {
 		if (item.id) {
 			app.firestore()
@@ -76,7 +78,6 @@ export function saveProduct(item) {
 						.doc(docRef.id)
 						.get()
 						.then((newItem) => {
-							console.log(newItem.data());
 							dispatch(createProduct(newItem.data()));
 						});
 				});

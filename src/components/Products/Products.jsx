@@ -17,13 +17,10 @@ function Products({ getProducts, products }) {
 
 	return (
 		<>
+			<button onClick={() => console.log(products)}>show state</button>
 			<Box p={2}>
 				<Link className="noTextDecoration" to={`${url}new`}>
-					<Button
-						variant="contained"
-						color="secondary"
-						startIcon={<AddIcon />}
-					>
+					<Button variant="contained" color="secondary" startIcon={<AddIcon />}>
 						add new product
 					</Button>
 				</Link>

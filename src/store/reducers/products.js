@@ -11,6 +11,8 @@ const initialState = {
 };
 
 function updateProduct(list, data) {
+	console.log(data);
+
 	return list.map((item) => (item.id === data.id ? data : item));
 }
 

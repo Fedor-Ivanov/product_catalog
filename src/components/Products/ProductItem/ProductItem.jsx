@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useRouteMatch } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import Paper from "@material-ui/core/Paper";
@@ -12,20 +12,25 @@ function ProductItem({ item }) {
 	const { url } = useRouteMatch();
 	const dispatch = useDispatch();
 
-	const nowDate = new Date();
+	const [discountDateCounter, setDiscountDateCounter] = useState();
 
-	const itemDate = new Date(item.discountDate);
+	let nowDate = new Date();
+	console.log(item.discountDate);
+	useEffect(() => {
+		let day = 1000 * 60 * 60 * 24;
 
-	const day = 1000 * 60 * 60 * 24;
+		let discountDateCounter = Math.floor((item.discountDate.toDate() - nowDate) / day);
 
-	const discountDateCounter = Math.floor((itemDate - nowDate) / day);
+		setDiscountDateCounter(discountDateCounter);
+
+		console.log(nowDate);
+		console.log(item.discountDate);
+		console.log(item.discountDate.toDate());
+		console.log(discountDateCounter);
+	}, []);
 
 	return (
-		<Paper
-			key={item.id}
-			elevation={2}
-			style={{ display: "grid", gridTemplateRows: "1fr 0.3fr 0.1fr" }}
-		>
+		<Paper key={item.id} elevation={2} style={{ display: "grid", gridTemplateRows: "1fr 0.3fr 0.1fr" }}>
 			<Box p={2}>
 				<img style={{ width: "100%" }} src={item.url} />
 			</Box>
@@ -33,11 +38,9 @@ function ProductItem({ item }) {
 			<Box p={2}>
 				<Typography variant="h5">{item.title}</Typography>
 
-				<Typography variant="subtitle1">
-					{item.description ? item.description : "-"}
-				</Typography>
+				<Typography variant="subtitle1">{item.description ? item.description : "-"}</Typography>
 				<Typography>
-					{item.discount && itemDate - nowDate < 0 ? (
+					{item.discount && item.discountDate - nowDate < 0 ? (
 						<>
 							<span
 								style={{
@@ -50,8 +53,7 @@ function ProductItem({ item }) {
 
 							<span>{` ${
 								item.discount && item.price
-									? Number(item.price) -
-									  (Number(item.price) / 100) * item.discount
+									? Number(item.price) - (Number(item.price) / 100) * item.discount
 									: item.price
 							}$
 									 - sale ${item.discount}%`}</span>
@@ -61,7 +63,7 @@ function ProductItem({ item }) {
 					)}
 				</Typography>
 				<Typography>
-					{item.discount && itemDate - nowDate < 0
+					{item.discount && item.discountDate - nowDate < 0
 						? `only ${discountDateCounter} day('s) left`
 						: "full price"}
 				</Typography>
@@ -72,10 +74,7 @@ function ProductItem({ item }) {
 					<Button startIcon={<EditIcon />}>edit</Button>
 				</Link>
 
-				<Button
-					onClick={() => dispatch(delProduct(item.id))}
-					startIcon={<DeleteForeverIcon />}
-				>
+				<Button onClick={() => dispatch(delProduct(item.id))} startIcon={<DeleteForeverIcon />}>
 					delete
 				</Button>
 			</Box>

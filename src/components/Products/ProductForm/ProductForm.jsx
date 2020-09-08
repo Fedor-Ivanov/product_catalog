@@ -7,6 +7,8 @@ import { Button } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import Box from "@material-ui/core/Box";
 import app from "../../../firebase";
+import DateFnsUtils from "@date-io/date-fns";
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from "@material-ui/pickers";
 import * as Yup from "yup";
 
 function ProductForm({ item, saveProduct }) {
@@ -16,33 +18,28 @@ function ProductForm({ item, saveProduct }) {
 	const [fileErrors, setfileErrors] = useState(null);
 
 	useEffect(() => {
-		const formatedDate = new Date(item.discountDate).toDateString();
-		setProduct({
-			...product,
-			discountDate: formatedDate,
-		});
+		if (item.id) {
+			console.log(item.discountDate);
+			const formatedDate = item.discountDate.toDate();
+
+			console.log(formatedDate);
+			setProduct({
+				...product,
+				discountDate: formatedDate,
+			});
+		}
 	}, []);
 
+	console.log(product.discountDate);
+
 	const validation = Yup.object().shape({
-		title: Yup.string()
-			.min(20, "Too short")
-			.max(60, "Too long")
-			.required("Required"),
+		title: Yup.string().min(20, "Too short").max(60, "Too long").required("Required"),
 		description: Yup.string().max(200, "Too long"),
-		price: Yup.number()
-			.positive("Must be a positive number")
-			.max(99999999.99, "Too big")
-			.required("Required"),
-		discount: Yup.number()
-			.positive("Must be a positive number!")
-			.min(10, "More")
-			.max(90, "Less"),
+		price: Yup.number().positive("Must be a positive number").max(99999999.99, "Too big").required("Required"),
+		discount: Yup.number().positive("Must be a positive number!").min(10, "More").max(90, "Less"),
 		discountDate: Yup.date().when("discount", {
 			is: (discount) => discount >= 10 || discount <= 90 == true,
-			then: (fieldSchema) =>
-				fieldSchema
-					.min(nowDate, "Must be an upcoming date")
-					.required("Required"),
+			then: (fieldSchema) => fieldSchema.min(nowDate, "Must be an upcoming date").required("Required"),
 		}),
 		url: Yup.string().required("Required"),
 	});
@@ -54,20 +51,19 @@ function ProductForm({ item, saveProduct }) {
 		});
 	}
 
+	const handleDateChange = (date) => {
+		setProduct({
+			...product,
+			discountDate: date,
+		});
+	};
+
 	function onFileChange(file) {
 		let img = new Image();
 		img.src = window.URL.createObjectURL(file);
 		img.onload = () => {
-			if (
-				img.width >= 200 &&
-				img.width <= 4000 &&
-				img.height >= 200 &&
-				img.height <= 4000
-			) {
-				const uploadTask = app
-					.storage()
-					.ref(`images/${file.name}`)
-					.put(file);
+			if (img.width >= 200 && img.width <= 4000 && img.height >= 200 && img.height <= 4000) {
+				const uploadTask = app.storage().ref(`images/${file.name}`).put(file);
 				uploadTask.on(
 					"state_changed",
 					(snapshot) => {},
@@ -100,6 +96,7 @@ function ProductForm({ item, saveProduct }) {
 
 	return (
 		<>
+			<button onClick={() => console.log(product)}>show state</button>
 			<Box p={2}>
 				<Formik
 					enableReinitialize={true}
@@ -109,23 +106,21 @@ function ProductForm({ item, saveProduct }) {
 						setSubmitting(true);
 
 						try {
-							const formateddiscountDate = Date(
-								values.discountDate
-							);
-							saveProduct({
-								...values,
-								discountDate: formateddiscountDate,
-							});
+							// let formateddiscountDate = Date(values.discountDate);
+							// saveProduct({
+							// 	...values,
+							// 	discountDate: formateddiscountDate,
+							// });
+
+							await saveProduct(values);
+							history.push("/");
 						} catch (error) {
 							alert(error);
 							setSubmitting(false);
 						}
-
-						history.push("/");
 					}}
 				>
 					{(props) => {
-						console.log(props);
 						return (
 							<Form>
 								<Box
@@ -138,24 +133,16 @@ function ProductForm({ item, saveProduct }) {
 								>
 									<TextField
 										onChange={(event) => {
-											onFileChange(
-												event.currentTarget.files[0]
-											);
+											onFileChange(event.currentTarget.files[0]);
 										}}
 										accept="image/*"
 										id="file"
 										name="file"
 										label="photo"
 										type="file"
-										error={
-											props.errors.url &&
-											props.touched.url
-										}
+										error={props.errors.url && props.touched.url}
 										helperText={
-											props.errors.url &&
-											props.touched.url &&
-											props.errors.url &&
-											fileErrors
+											props.errors.url && props.touched.url && props.errors.url && fileErrors
 										}
 									></TextField>
 
@@ -166,15 +153,8 @@ function ProductForm({ item, saveProduct }) {
 										name="title"
 										type="text"
 										onBlur={props.handleBlur}
-										error={
-											props.errors.title &&
-											props.touched.title
-										}
-										helperText={
-											props.errors.title &&
-											props.touched.title &&
-											props.errors.title
-										}
+										error={props.errors.title && props.touched.title}
+										helperText={props.errors.title && props.touched.title && props.errors.title}
 									></TextField>
 									<TextField
 										value={props.values.description}
@@ -182,10 +162,7 @@ function ProductForm({ item, saveProduct }) {
 										label="description"
 										name="description"
 										onBlur={props.handleBlur}
-										error={
-											props.errors.description &&
-											props.touched.description
-										}
+										error={props.errors.description && props.touched.description}
 										helperText={
 											props.errors.description &&
 											props.touched.description &&
@@ -199,15 +176,8 @@ function ProductForm({ item, saveProduct }) {
 										label="price"
 										name="price"
 										onBlur={props.handleBlur}
-										error={
-											props.errors.price &&
-											props.touched.price
-										}
-										helperText={
-											props.errors.price &&
-											props.touched.price &&
-											props.errors.price
-										}
+										error={props.errors.price && props.touched.price}
+										helperText={props.errors.price && props.touched.price && props.errors.price}
 										type="number"
 									></TextField>
 									<TextField
@@ -216,47 +186,34 @@ function ProductForm({ item, saveProduct }) {
 										label="discount"
 										name="discount"
 										onBlur={props.handleBlur}
-										error={
-											props.errors.discount &&
-											props.touched.discount
-										}
+										error={props.errors.discount && props.touched.discount}
 										helperText={
-											props.errors.discount &&
-											props.touched.discount &&
-											props.errors.discount
+											props.errors.discount && props.touched.discount && props.errors.discount
 										}
 										type="number"
 									></TextField>
-									<TextField
-										value={props.values.discountDate}
-										onChange={onChange}
-										label="discount date"
-										name="discountDate"
-										format="yyyy-MM-dd"
-										type="date"
-										onBlur={props.handleBlur}
-										error={
-											props.errors.discountDate &&
-											props.touched.discountDate
-										}
-										helperText={
-											props.errors.discountDate &&
-											props.touched.discountDate &&
-											props.errors.discountDate
-										}
-									></TextField>
+									<MuiPickersUtilsProvider utils={DateFnsUtils}>
+										<KeyboardDatePicker
+											format="dd.MM.yyyy"
+											type="text"
+											value={props.values.discountDate ? props.values.discountDate : null}
+											name="discountDate"
+											label="discount date"
+											onBlur={props.handleBlur}
+											error={props.errors.discountDate && props.touched.discountDate}
+											helperText={
+												props.errors.discountDate &&
+												props.touched.discountDate &&
+												props.errors.discountDate
+											}
+											onChange={handleDateChange}
+										/>
+									</MuiPickersUtilsProvider>
 								</Box>
-								<Button
-									variant="contained"
-									color="secondary"
-									type="submit"
-								>
+								<Button variant="contained" color="secondary" type="submit">
 									save
 								</Button>
-								<Button
-									color="secondary"
-									onClick={() => history.push("/")}
-								>
+								<Button color="secondary" onClick={() => history.push("/")}>
 									back
 								</Button>
 							</Form>
@@ -275,13 +232,10 @@ function mapStateToProps({ products }, { match }) {
 		description: "",
 		price: "",
 		discount: "",
-		discountDate: "",
+		discountDate: null,
 	};
 	return {
-		item:
-			match.params.id !== "new"
-				? products.list.find((item) => item.id === match.params.id)
-				: newProduct,
+		item: match.params.id !== "new" ? products.list.find((item) => item.id === match.params.id) : newProduct,
 	};
 }
 
