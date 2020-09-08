@@ -57,14 +57,9 @@ export function getProducts() {
 
 export const THUNK_SAVE_PRODUCT = "THUNK_SAVE_PRODUCT";
 export function saveProduct(item) {
-	console.log(item);
-
 	return function (dispatch) {
 		if (item.id) {
 			app.firestore().collection("products").doc(item.id).update(item);
-			// .then(() => {
-			// 	dispatch(updateProduct(item));
-			// });
 		} else {
 			app.firestore()
 				.collection("products")

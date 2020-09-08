@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import { Formik, Form } from "formik";
 import TextField from "@material-ui/core/TextField";
@@ -14,20 +14,8 @@ import * as Yup from "yup";
 function ProductForm({ item, saveProduct }) {
 	const history = useHistory();
 	const nowDate = new Date();
-	const [product, setProduct] = useState(item);
+	const [product, setProduct] = useState(item.id ? { ...item, discountDate: item.discountDate.toDate() } : item);
 	const [fileErrors, setfileErrors] = useState(null);
-
-	useEffect(() => {
-		if (item.id && item.discountDate) {
-			console.log(item.discountDate);
-			setProduct({
-				...item,
-				discountDate: item.discountDate.toDate(),
-			});
-		}
-	}, []);
-
-	console.log(product.discountDate);
 
 	const validation = Yup.object().shape({
 		title: Yup.string().min(20, "Too short").max(60, "Too long").required("Required"),
